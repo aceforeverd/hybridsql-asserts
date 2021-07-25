@@ -3,8 +3,8 @@ version: 2.1
 # Use a package of configuration called an orb.
 jobs:
   build-medium:
-    machine:
-      image: ubuntu-2004:202101-01
+    docker:
+      - image: ghcr.io/aceforeverd/hybridsql-base:0.4.0-beta5
     resource_class: arm.medium
     steps:
       - run: uname -a
