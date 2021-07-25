@@ -4,8 +4,7 @@ version: 2.1
 jobs:
   build-medium:
     docker:
-      - image: ghcr.io/aceforeverd/hybridsql-base:0.4.0-beta5
-    resource_class: arm.medium
+      - image: ghcr.io/aceforeverd/hybridsql-base@sha256:3cd1b2f4f39d3a5191bd6df101a7df4381ce14db8e197e6309653089f9ee7466
     steps:
       - run: uname -a
       - run: echo $OSTYPE
