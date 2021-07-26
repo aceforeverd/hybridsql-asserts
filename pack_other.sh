@@ -18,7 +18,6 @@
 # install_deps.sh: build & install dependencies.
 
 set -eE
-set -x
 
 cd "$(dirname "$0")"
 
