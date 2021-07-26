@@ -5,6 +5,9 @@ dist: focal
 # group: edge
 language: c++
 
+env:
+  - MAKEOPTS='-j1'
+
 install:
   - sudo apt-get install -y python3-dev
 script:

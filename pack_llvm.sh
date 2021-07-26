@@ -36,7 +36,7 @@ pushd llvm-$VERSION.src/
 mkdir -p build && cd build
 
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$DEPS_PREFIX" -DLLVM_TARGETS_TO_BUILD="$LLVM_TARGETS"  -DCMAKE_CXX_FLAGS=-fPIC ..
-make "-j$(nproc)"
+make $MAKEOPTS
 make install
 popd
 
