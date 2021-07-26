@@ -4,6 +4,8 @@ set -e
 
 cd "$(dirname "$0")"
 
+source var.sh
+
 VERSION=9.0.0
 
 if [ -d '/opt/rh/devtoolset-8' ] ; then

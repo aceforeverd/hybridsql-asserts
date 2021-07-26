@@ -1,7 +1,12 @@
 os: linux
-arch: arm64
+arch: arm64-graviton2
+virt: vm
 dist: focal
+group: edge
+language: c++
 
+install:
+  - sudo apt-get install -y python3-dev
 script:
   - ./fetch_resource.sh
   - ./pack_other.sh
