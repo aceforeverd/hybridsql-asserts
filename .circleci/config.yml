@@ -2,18 +2,24 @@
 version: 2.1
 # Use a package of configuration called an orb.
 jobs:
-  build-medium:
-    docker:
-      - image: ghcr.io/aceforeverd/hybridsql-base@sha256:3cd1b2f4f39d3a5191bd6df101a7df4381ce14db8e197e6309653089f9ee7466
+  aarch64-build:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
     steps:
-      - run: uname -a
-      - run: echo $OSTYPE
-      - run: arch
+      - checkout
+      - run: ./fetch_resource.sh
+      - run: ./pack_other.sh
+      - run: ./pack_boost.sh
+      - run: ./pack_llvm.sh
+      - run: ./pack_all.sh
+      - store_artifacts:
+          path: thirdparty-*.tar.gz
 
 # Orchestrate or schedule a set of jobs
 workflows:
   # Name the workflow "welcome"
   build:
     jobs:
-      - build-medium
+      - aarch64-build
 
