@@ -45,7 +45,7 @@ if [[ "${OS}" = "darwin" ]]; then
 	sed -i '' 's/^#include <syscall.h>/#include <pthread.h>/' src/logging.cc
 	sed -i '' 's/thread_id = syscall(__NR_gettid)/pthread_threadid_np(0, \&thread_id)/' src/logging.cc
 fi
-make -j"$(nproc)" INCLUDE_PATH="-Iinclude -I$DEPS_PREFIX/include" PREFIX="$DEPS_PREFIX" install
+make $MAKEOPTS INCLUDE_PATH="-Iinclude -I$DEPS_PREFIX/include" PREFIX="$DEPS_PREFIX" install
 
 popd
 

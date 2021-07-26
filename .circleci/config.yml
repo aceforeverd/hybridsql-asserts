@@ -21,5 +21,7 @@ workflows:
   # Name the workflow "welcome"
   build:
     jobs:
-      - aarch64-build
-
+      - aarch64-build:
+          filters:
+            branches:
+              only: circleci-project-setup
