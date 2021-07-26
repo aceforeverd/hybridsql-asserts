@@ -38,16 +38,18 @@ fetch()
         echo -e "${GREEN}downloading $url ...${NC}"
         curl -SL -o "$file_name" "$url"
         echo -e "${GREEN}download $url${NC}"
+    else
+        echo "$file_name" already downloaded
     fi
 }
 
 mkdir -p "$DOWNLOAD_DIR"
 pushd "$DOWNLOAD_DIR"
 
-echo -e "${GREEN}downloading resource into $DOWNLOAD_DIR${NC}"
+echo -e "${GREEN}downloading resources into $DOWNLOAD_DIR${NC}"
 
 # google test
-fetch https://github.com/google/googletest/archive/refs/tags/release-1.10.0.tar.gz googletest-release-1.10.0.tar.gz
+fetch https://github.com/google/googletest/archive/refs/tags/release-1.11.0.tar.gz googletest-release-1.11.0.tar.gz
 
 # zlib
 fetch https://github.com/madler/zlib/archive/v1.2.11.tar.gz zlib-1.2.11.tar.gz
@@ -58,7 +60,7 @@ fetch https://src.fedoraproject.org/lookaside/pkgs/snappy/snappy-1.1.1.tar.gz/88
 # gflags
 fetch https://github.com/gflags/gflags/archive/refs/tags/v2.2.0.tar.gz gflags-2.2.0.tar.gz
 # libunwind
-fetch https://github.com/libunwind/libunwind/archive/refs/tags/v1.1.tar.gz libunwind-1.1.tar.gz
+fetch https://github.com/libunwind/libunwind/releases/download/v1.5/libunwind-1.5.0.tar.gz libunwind-1.5.0.tar.gz
 # gperftools
 fetch https://github.com/gperftools/gperftools/releases/download/gperftools-2.5/gperftools-2.5.tar.gz gperftools-2.5.tar.gz
 # leveldb
@@ -70,7 +72,7 @@ fetch https://github.com/google/glog/archive/refs/tags/v0.4.0.tar.gz glog-0.4.0.
 # bison
 fetch https://ftp.gnu.org/gnu/bison/bison-3.4.tar.gz bison-3.4.tar.gz
 # absl
-fetch https://github.com/abseil/abseil-cpp/archive/a50ae369a30f99f79d7559002aba3413dac1bd48.tar.gz absl.tar.gz
+fetch https://github.com/abseil/abseil-cpp/archive/2e94e5b6e152df9fa9c2fe8c1b96e1393973d32c.zip absl.zip
 
 # swig
 fetch https://github.com/swig/swig/archive/v4.0.1.tar.gz swig-4.0.1.tar.gz
@@ -96,15 +98,10 @@ fetch https://github.com/google/benchmark/archive/v1.5.0.tar.gz v1.5.0.tar.gz
 # incubator brpc
 fetch https://github.com/4paradigm/incubator-brpc/archive/4f69bc0c04abc0734962722ba43aecb4dd7a5dea.zip incubator-brpc.zip
 
-# doxygen
-fetch https://github.com/doxygen/doxygen/archive/Release_1_8_19.tar.gz doxygen-1.8.19.src.tar.gz
-
 # zookeeper
 fetch https://archive.apache.org/dist/zookeeper/zookeeper-3.4.14/zookeeper-3.4.14.tar.gz apache-zookeeper-3.4.14.tar.gz
 
 # baidu common
 fetch https://github.com/4paradigm/common/archive/refs/tags/v1.0.0.tar.gz common-1.0.0.tar.gz
-
-fetch https://github.com/google/zetasql/archive/5ccb05880e72ab9ff75dd6b05d7b0acce53f1ea2.zip zetasql.zip
 
 popd

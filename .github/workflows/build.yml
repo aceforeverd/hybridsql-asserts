@@ -25,7 +25,7 @@ jobs:
           path: |
             src/*.tar.*
             src/*.zip
-          key: ${{ runner.os }}-${{ hashFiles('**/CMakeLists.txt', 'fetch_resource.sh') }}
+          key: ${{ hashFiles('**/CMakeLists.txt', 'fetch_resource.sh') }}
 
       - name: Setup cmake
         uses: jwlawson/actions-setup-cmake@v1.8
@@ -49,6 +49,55 @@ jobs:
             libother-*.tar.gz
             src/apache-zookeeper-*.tar.gz
 
+  build-other-mac:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache Source
+        id: cache-source
+        uses: actions/cache@v2
+        with:
+          path: |
+            src/*.tar.*
+            src/*.zip
+          key: ${{ hashFiles('**/CMakeLists.txt', 'fetch_resource.sh') }}
+
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.8
+        with:
+          cmake-version: '3.20.x'
+
+      - name: Install System Dependencies
+      # coreutils for nproc
+      # gnu-getopt for brpc
+        run: |
+          brew install automake
+          brew install coreutils
+          brew install gnu-getopt
+
+      - name: download
+        if: steps.cache-source.outputs.cache-hit != 'true'
+        run: |
+          ./fetch_resource.sh
+
+      - name: build
+        run: |
+          getopt -V
+          echo 'export PATH="/usr/local/opt/gnu-getopt/bin:$PATH"' >> ~/.bash_profile
+          source ~/.bash_profile
+          getopt -V
+          ./pack_other.sh
+
+      - name: Upload Artifact
+        if: ${{ github.event_name == 'push' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-mac
+          path: |
+            libother-*.tar.gz
+            src/apache-zookeeper-*.tar.gz
 
   build-llvm:
     runs-on: ubuntu-latest
@@ -64,7 +113,7 @@ jobs:
           path: |
             src/*.tar.*
             src/*.zip
-          key: ${{ runner.os }}-${{ hashFiles('**/CMakeLists.txt', 'fetch_resource.sh') }}
+          key: ${{ hashFiles('**/CMakeLists.txt', 'fetch_resource.sh') }}
 
       - name: Setup cmake
         uses: jwlawson/actions-setup-cmake@v1.8
@@ -86,6 +135,47 @@ jobs:
         with:
           path: llvm-*.tar.gz
 
+  build-llvm-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache Source
+        id: cache-source
+        uses: actions/cache@v2
+        with:
+          path: |
+            src/*.tar.*
+            src/*.zip
+          key: ${{ hashFiles('**/CMakeLists.txt', 'fetch_resource.sh') }}
+
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.8
+        with:
+          cmake-version: '3.20.x'
+
+      - name: Install System Dependencies
+      # coreutils for nproc
+        run: |
+          brew install coreutils
+
+      - name: download
+        if: steps.cache-source.outputs.cache-hit != 'true'
+        run: |
+          ./fetch_resource.sh
+
+      - name: build llvm
+        run: |
+          ./pack_llvm.sh
+
+      - name: Upload Artifact
+        if: ${{ github.event_name == 'push' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-mac
+          path: llvm-*.tar.gz
+
+
   build-boost:
     runs-on: ubuntu-latest
     container:
@@ -100,7 +190,7 @@ jobs:
           path: |
             src/*.tar.*
             src/*.zip
-          key: ${{ runner.os }}-${{ hashFiles('**/CMakeLists.txt', 'fetch_resource.sh') }}
+          key: ${{ hashFiles('**/CMakeLists.txt', 'fetch_resource.sh') }}
 
       - name: download
         if: steps.cache-source.outputs.cache-hit != 'true'
@@ -117,30 +207,77 @@ jobs:
         with:
           path: boost-*.tar.gz
 
+  build-boost-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache Source
+        id: cache-source
+        uses: actions/cache@v2
+        with:
+          path: |
+            src/*.tar.*
+            src/*.zip
+          key: ${{ hashFiles('**/CMakeLists.txt', 'fetch_resource.sh') }}
+
+      - name: Install System Dependencies
+      # coreutils for nproc
+        run: |
+          brew install coreutils
+
+      - name: download
+        if: steps.cache-source.outputs.cache-hit != 'true'
+        run: |
+          ./fetch_resource.sh
+
+      - name: build boost
+        run: |
+          ./pack_boost.sh
+
+      - name: Upload Artifact
+        if: ${{ github.event_name == 'push' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact-mac
+          path: boost-*.tar.gz
+
   release:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: ['build-other', 'build-llvm', 'build-boost']
+    needs: ['build-other', 'build-llvm', 'build-boost',
+    'build-other-mac', 'build-llvm-mac', 'build-boost-mac']
     steps:
       - uses: actions/checkout@v2
 
       - name: Download Artifacts
         uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          path: linux/
 
-      - name: Determine Version
-        working-directory: artifact
-        run: |
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          VERSION=$(echo $VERSION | sed -e 's/^v//')
+      - name: Download Artifacts For Mac
+        uses: actions/download-artifact@v2
+        with:
+          name: artifact-mac
+          path: darwin/
 
-      - name: Pack All
+      - name: Pack All Linux
         run: |
-          ./pack_all.sh
+          ./pack_all.sh linux
+
+      - name: Pack All For Mac
+        run: |
+          ./pack_all.sh darwin
+        env:
+          OS: darwin
+          ARCH: x86_64
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifact/*.tar.gz
+            linux/third*.tar.gz
+            darwin/thirdparty-*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
