@@ -1,0 +1,12 @@
+os: linux
+arch: arm64
+dist: focal
+
+script:
+  - ./fetch_resource.sh
+  - ./pack_other.sh
+  - ./pack_boost.sh
+  - ./pack_llvm.sh
+  - ./pack_all.sh
+
+
