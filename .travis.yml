@@ -6,15 +6,15 @@ dist: focal
 language: c++
 
 env:
-  - MAKEOPTS='-j1'
+  - MAKEOPTS='-j2'
 
 install:
   - sudo apt-get install -y python3-dev
 script:
   - ./fetch_resource.sh
   - ./pack_other.sh
-  - ./pack_boost.sh
-  - ./pack_llvm.sh
+  - ./pack_boost.sh > build_boost.log
+  - ./pack_llvm.sh > build_llvm.log
   - ./pack_all.sh
 
 
