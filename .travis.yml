@@ -12,7 +12,7 @@ install:
   - sudo apt-get install -y python3-dev
 script:
   - ./fetch_resource.sh
-  - ./pack_other.sh
+  - ./pack_other.sh > build_other.log
   - ./pack_boost.sh > build_boost.log
   - ./pack_llvm.sh > build_llvm.log
   - ./pack_all.sh
