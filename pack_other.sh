@@ -47,7 +47,7 @@ export CFLAGS=" -O3 -fPIC"
 mkdir -p "$DEPS_PREFIX/lib" "$DEPS_PREFIX/include" "$DEPS_SOURCE"
 export PATH=${DEPS_PREFIX}/bin:$PATH
 
-pushd "$DEPS_SOURCE"
+pushd "$DEPS_SOURCE"/
 
 if [ ! -f gtest_succ ]; then
 	echo "installing gtest ...."
@@ -112,7 +112,7 @@ else
 	echo "start install protobuf ..."
 	tar zxf protobuf-3.6.1.3.tar.gz
 
-	pushd protobuf-*
+	pushd protobuf-*/
     ./autogen.sh && ./configure --disable-shared --with-pic --prefix "${DEPS_PREFIX}" CPPFLAGS=-I"$DEPS_PREFIX/include" LDFLAGS=-L"$DEPS_PREFIX/lib"
 	make -j"$(nproc)"
 	make install
@@ -127,7 +127,7 @@ if [ -f "snappy_succ" ]; then
 else
 	echo "start install snappy ..."
 	tar zxf snappy-1.1.1.tar.gz
-	pushd snappy-1.1.1
+	pushd snappy-1.1.1/
 	./configure $DEPS_CONFIG
 	make "-j$(nproc)"
 	make install
@@ -143,7 +143,7 @@ elif [[ $OS = "darwin" ]]; then
 	echo "For Mac, libunwind doesn't need to be built separately"
 else
 	tar zxf libunwind-1.5.0.tar.gz
-	pushd libunwind-1.5.0
+	pushd libunwind-1.5.0/
 	./configure --prefix="$DEPS_PREFIX" --enable-shared=no
     make -j"$(nproc)"
     make install
@@ -156,7 +156,7 @@ if [ -f "gperf_succ" ]; then
 	echo "gperf_succ exist"
 else
 	tar zxf gperftools-2.5.tar.gz
-	pushd gperftools-2.5
+	pushd gperftools-2.5/
 	./configure --enable-cpu-profiler --enable-heap-checker --enable-heap-profiler --prefix="$DEPS_PREFIX" --enable-shared=no
 	make "-j$(nproc)"
 	make install
@@ -201,7 +201,7 @@ else
 fi
 
 unzip absl.zip
-pushd abseil-cpp-*
+pushd abseil-cpp-*/
 cmake -H. -Bbuild -DCMAKE_INSTALL_LIBDIR=lib \
     -DCMAKE_INSTALL_PREFIX="$DEPS_PREFIX" -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_RUN_TESTS=OFF \
@@ -214,7 +214,7 @@ if [ -f "brpc_succ" ]; then
 	echo "brpc exist"
 else
 	unzip incubator-brpc.zip
-	pushd incubator-brpc-*
+	pushd incubator-brpc-*/
     if [[ $(target_arch) = aarch64 ]]; then
         # those options not exist on arm
         sed -e '/CXXFLAGS+=-msse4 -msse4.2/s/^/#/' -i Makefile
@@ -295,7 +295,7 @@ else
 fi
 
 tar -zxf apache-zookeeper-3.4.14.tar.gz
-pushd zookeeper-3.4.14/zookeeper-client/zookeeper-client-c
+pushd zookeeper-3.4.14/zookeeper-client/zookeeper-client-c/
 if [[ $OS = "darwin" ]]; then
 	CC="clang" CFLAGS="$CFLAGS" ./configure --prefix="$DEPS_PREFIX" --enable-shared=no
 else
