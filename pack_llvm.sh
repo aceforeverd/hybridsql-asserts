@@ -27,10 +27,10 @@ else
     LLVM_TARGETS=all
 fi
 
-pushd "$DEPS_SOURCE"
+pushd "$DEPS_SOURCE"/
 
 tar xf llvm-$VERSION.src.tar.xz
-pushd llvm-$VERSION.src
+pushd llvm-$VERSION.src/
 mkdir -p build && cd build
 
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$DEPS_PREFIX" -DLLVM_TARGETS_TO_BUILD="$LLVM_TARGETS"  -DCMAKE_CXX_FLAGS=-fPIC ..
