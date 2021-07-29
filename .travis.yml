@@ -1,20 +1,19 @@
 os: linux
-arch: arm64
+arch: arm64-graviton2
 dist: focal
-# virt: vm
-# group: edge
-language: c++
+virt: vm
+group: edge
+language: cpp
 
 env:
   - MAKEOPTS='-j2'
 
 install:
+  - curl -SLo cmake.tar.gz https://github.com/Kitware/CMake/releases/download/v3.21.1/cmake-3.21.1-linux-aarch64.tar.gz && tar xzf cmake.tar.gz -C /usr/local/ --strip-components=1
   - sudo apt-get install -y python3-dev libcppunit-dev
 script:
   - ./fetch_resource.sh
-  - ./pack_other.sh > build_other.log
-  - ./pack_boost.sh > build_boost.log
-  - ./pack_llvm.sh > build_llvm.log
-  - ./pack_all.sh
-
-
+  - ./pack_other.sh
+  # - ./pack_boost.sh > build_boost.log
+  # - ./pack_llvm.sh > build_llvm.log
+  # - ./pack_all.sh
