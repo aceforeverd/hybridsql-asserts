@@ -319,9 +319,9 @@ else
     if [[ $OS = "darwin" ]]; then
         CC="clang" CFLAGS="$CFLAGS" ./configure --prefix="$DEPS_PREFIX" --enable-shared=no
     else
-        autoreconf -if
+        # autoreconf -if
         # see https://issues.apache.org/jira/browse/ZOOKEEPER-3293
-        CFLAGS="$CFLAGS -Wno-error=format-overflow=" ./configure --prefix="$DEPS_PREFIX" --enable-shared=no
+        CFLAGS="$CFLAGS -Wno-error=format-overflow=" ./configure --prefix="$DEPS_PREFIX" --enable-shared=no --without-cppunit
     fi
 
     make $MAKEOPTS
